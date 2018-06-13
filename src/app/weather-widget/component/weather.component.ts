@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import {WeatherService} from '../service/weather.service';
+import { WeatherService } from '../service/weather.service';
+import { Weather } from '../model/weather';
 @Component({
     // moduleId:module.id,
     selector: 'weather-widget',
@@ -9,18 +10,37 @@ import {WeatherService} from '../service/weather.service';
     providers:[WeatherService]
 })
 
-export class WeatherComponent{
+export class WeatherComponent implements OnInit{
     pos : Position;
-    constructor(private service:WeatherService){
+    WeatherData = new Weather(null, null, null, null, null);
+    currentSpeedUnit = "kph";
+
+    constructor(private service:WeatherService){}
+
+    ngOnInit(){
+        this.getCurrentLocation();
+
+    }
+    getCurrentLocation(){
         this.service.getCurrentLocation()
             .subscribe(position => {
                 this.pos = position
-                this.service.getCurrentWeather(this.pos.coords.latitude, this.pos.coords.longitude)
-                .subscribe(weather => console.log(weather),
-                err => console.error(err));
-
-        },
-        err=> console.error(err));
-        
+                this.getCurrentWeather()
+            },
+            err => console.error(err));
     }
+
+    getCurrentWeather(){
+        this.service.getCurrentWeather(this.pos.coords.latitude, this.pos.coords.longitude)
+            .subscribe(weather => {
+                this.WeatherData.temp = weather["currently"]["temperature"],
+                this.WeatherData.summary = weather["currently"]["summary"],
+                this.WeatherData.wind = weather["currently"]["windSpeed"],
+                this.WeatherData.humidity = weather["currently"]["humidity"],
+                this.WeatherData.icon = weather["currently"]["icon"]
+                console.log("Weather:", this.WeatherData); //to remove
+            },
+            err => console.error(err));
+    }
+
 }
