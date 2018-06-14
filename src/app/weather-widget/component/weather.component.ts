@@ -43,19 +43,18 @@ export class WeatherComponent implements OnInit{
                 this.WeatherData.humidity = weather["currently"]["humidity"],
                 this.WeatherData.icon = weather["currently"]["icon"]
                 console.log("Weather:", this.WeatherData); //to remove
+                console.log(this.pos.coords.latitude, this.pos.coords.longitude);
             },
             err => console.error(err));
     }
 
 
     getLocationName(){
-        this.service.getLocationName(this.pos.coords.latitude, this.pos.coords.longitude)
+        this.service.getLocationName(40.714224,-73.961452)
             .subscribe(location => {
                 console.log(location); //TODO: remove
-            },error => {
-                console.log('Error happened' + error);
             }
-        )
+        );
     }
 
 }
