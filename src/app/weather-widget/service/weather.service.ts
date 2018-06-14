@@ -1,20 +1,26 @@
 import {Injectable} from '@angular/core';
-import {Jsonp} from '@angular/http';
+import {Jsonp, Http} from '@angular/http';
 import { Observable} from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+// import {HttpHeaders} from "@angular/common/http";
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 // import 'rxjs/add/operator/map';
 // import 'rxjs/add/operator/catch';
 
-import {FORCAST_KEY, FORCAST_ROOT} from '../constants/constants';
+import {FORCAST_KEY, FORCAST_ROOT, GOOGLE_KEY, GOOGLE_ROOT} from '../constants/constants';
+// private http:Http,
+
+
+
 @Injectable()
 export class WeatherService{
-    constructor(private jsonp:Jsonp){}
+    constructor(private jsonp:Jsonp, private http: HttpClient){}
     getCurrentLocation() : Observable<any>{
         if(navigator.geolocation){
             return Observable.create(observer => {
                 navigator.geolocation.getCurrentPosition(pos=>{
-                    observer.next(pos)
+                    observer.next(pos);
                 }
             ),
             err => { 
@@ -43,4 +49,17 @@ export class WeatherService{
         // })
 
     }
+
+   
+
+    getLocationName(lat:number, long:number):Observable<any>{
+        const url = GOOGLE_ROOT;
+        const queryParams = "?latlng=" + lat + "," + long + "&key="+ GOOGLE_KEY;
+       
+        return this.http.get(url+queryParams)
+            .pipe(map(loc =>loc.json())
+
+
+    }
 }
+

@@ -5,7 +5,7 @@
                 <p style="padding-top:5px;">Leeds, UK</p>
             </div>
             <div class="col-md-4 offset-md-3">
-                <h1>{{ WeatherData.temp | number : '.0-0' }}&deg;</h1>
+                <h1>{{ WeatherData.temp | tempUnit : currentTempUnit |number : '.0-0' }}&deg;</h1>
             </div>
         </div>
         

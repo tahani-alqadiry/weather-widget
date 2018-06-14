@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { WeatherService } from '../service/weather.service';
 import { Weather } from '../model/weather';
+
 @Component({
-    // moduleId:module.id,
     selector: 'weather-widget',
     templateUrl: './weather.component.html',
     styleUrls: ['./weather.component.css'],
@@ -14,7 +14,8 @@ export class WeatherComponent implements OnInit{
     pos : Position;
     WeatherData = new Weather(null, null, null, null, null);
     currentSpeedUnit = "kph";
-
+    currentTempUnit = "fahrenheit";
+    currentLocation = "";
     constructor(private service:WeatherService){}
 
     ngOnInit(){
@@ -24,8 +25,11 @@ export class WeatherComponent implements OnInit{
     getCurrentLocation(){
         this.service.getCurrentLocation()
             .subscribe(position => {
-                this.pos = position
-                this.getCurrentWeather()
+                this.pos = position;
+                this.getCurrentWeather();
+                this.getLocationName();
+                // this.showConfig();
+
             },
             err => console.error(err));
     }
@@ -41,6 +45,17 @@ export class WeatherComponent implements OnInit{
                 console.log("Weather:", this.WeatherData); //to remove
             },
             err => console.error(err));
+    }
+
+
+    getLocationName(){
+        this.service.getLocationName(this.pos.coords.latitude, this.pos.coords.longitude)
+            .subscribe(location => {
+                console.log(location); //TODO: remove
+            },error => {
+                console.log('Error happened' + error);
+            }
+        )
     }
 
 }
