@@ -3,6 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { WeatherService } from '../service/weather.service';
 import { Weather } from '../model/weather';
 
+import { WEATHER_COLORS } from '../constants/constants';
+
+declare var Skycons : any;
+
 @Component({
     selector: 'weather-widget',
     templateUrl: './weather.component.html',
@@ -16,6 +20,8 @@ export class WeatherComponent implements OnInit{
     currentSpeedUnit = "kph";
     currentTempUnit = "fahrenheit";
     currentLocation = "";
+    icons = new Skycons({"color" : "#FFF"});
+
     constructor(private service:WeatherService){}
 
     ngOnInit(){
@@ -28,7 +34,6 @@ export class WeatherComponent implements OnInit{
                 this.pos = position;
                 this.getCurrentWeather();
                 this.getLocationName();
-                // this.showConfig();
 
             },
             err => console.error(err));
@@ -44,6 +49,7 @@ export class WeatherComponent implements OnInit{
                 this.WeatherData.icon = weather["currently"]["icon"]
                 console.log("Weather:", this.WeatherData); //to remove
                 console.log(this.pos.coords.latitude, this.pos.coords.longitude);
+                this.setIcon();
             },
             err => console.error(err));
     }
@@ -53,8 +59,38 @@ export class WeatherComponent implements OnInit{
         this.service.getLocationName(40.714224,-73.961452)
             .subscribe(location => {
                 console.log(location); //TODO: remove
+                this.currentLocation = location["results"][9]["formatted_address"];
+                console.log("name: ", this.currentLocation ); //TODO: remove
             }
         );
+    }
+
+    toggleUnits(){
+        this.toggleSpeedUnit();
+        this.toggleTempUnit();
+
+    }
+
+    toggleTempUnit(){
+        if(this.currentTempUnit == "fahrenheit"){
+            this.currentTempUnit = "celsius";
+        }else{
+            this.currentTempUnit = "fahrenheit";
+        }
+
+    }
+
+    toggleSpeedUnit(){
+        if(this.currentSpeedUnit == "kph"){
+            this.currentSpeedUnit = "mph";
+        }else{
+            this.currentSpeedUnit = "kph";
+        }
+    }
+
+    setIcon(){
+        this.icons.add("icon", this.WeatherData.icon);
+        this.icons.play();
     }
 
 }
