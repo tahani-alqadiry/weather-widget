@@ -1,8 +1,9 @@
-<div class="card" (click) = "toggleUnits()">
-    <div class="card-header">
+<div class="card" (click) = "toggleUnits()" [ngStyle] = "setStyle()" >
+    <div class="card-header" [class.invisible] = "!dataReceived" >
         <div class="row">
-            <div class="col-md-5">
-                <p style="padding-top:5px; margin-left: 0.2rem">{{currentLocation}}</p>
+            <div class="col-md-5" id="location-wrapper">
+                <p style="padding-top:5px; margin-left: 0.2rem"><i class="fa fa-map-marker" aria-hidden="true"></i>
+                    {{currentLocation}}</p>
             </div>
             <div class="col-md-4 offset-md-3">
                 <h1>{{ WeatherData.temp | tempUnit : currentTempUnit |number : '.0-0' }}&deg;</h1>
@@ -12,19 +13,30 @@
 
     </div>
     <div class="card-body">
-        <canvas id="icon"></canvas>
+        <div id="indicator" [hidden]= "dataReceived">
+            <i class="fa fa-circle-o-notch fa-spin" style="font-size:70px"></i>
+            <span class="sr-only"> loading..</span>
+        </div>
+        <canvas id="icon" [hidden]= "!dataReceived"></canvas>
         <p>{{WeatherData.summary}}</p>
 
     </div>
-    <div class="card-footer">
-        <div class="row">
+    <div class="card-footer" [class.invisible] = "!dataReceived">
+        <div class="row" id="detail-row">
             <div class="col-md-5">
                 <p>Wind</p>
-                <p>{{WeatherData.wind | SpeedUnit:currentSpeedUnit}}</p>
+                <p class="unit-label">{{WeatherData.wind | SpeedUnit:currentSpeedUnit}}</p>
             </div>
             <div class="col-md-5 offset-md-2">
                 <p>Humidity</p>
                 <p>{{WeatherData.humidity | percent }}</p>
+            </div>
+        </div>
+        <div class="row" id="helper-row">
+            <div class="col-md-12">
+                <small class="text-muted">
+                    click to switch between &deg;f/kph and &deg;c/mph
+                </small>
             </div>
         </div>
 

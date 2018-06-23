@@ -20,7 +20,8 @@ export class WeatherComponent implements OnInit{
     currentSpeedUnit = "kph";
     currentTempUnit = "fahrenheit";
     currentLocation = "";
-    icons = new Skycons({"color" : "#FFF"});
+    icons = new Skycons();
+    dataReceived = false;
 
     constructor(private service:WeatherService){}
 
@@ -50,6 +51,7 @@ export class WeatherComponent implements OnInit{
                 console.log("Weather:", this.WeatherData); //to remove
                 console.log(this.pos.coords.latitude, this.pos.coords.longitude);
                 this.setIcon();
+                this.dataReceived = true;
             },
             err => console.error(err));
     }
@@ -91,6 +93,16 @@ export class WeatherComponent implements OnInit{
     setIcon(){
         this.icons.add("icon", this.WeatherData.icon);
         this.icons.play();
+    }
+
+    setStyle(): Object{
+        if(this.WeatherData.icon){
+            this.icons.color = WEATHER_COLORS[this.WeatherData.icon]["color"];
+            return WEATHER_COLORS[this.WeatherData.icon];
+        }else{
+            this.icons.color = WEATHER_COLORS["default"]["color"];
+            return WEATHER_COLORS["default"];
+        }
     }
 
 }
